@@ -218,6 +218,32 @@ paths:
             $ref: "#/definitions/GalleryResponse"
         400:
           description: "Invalide  query"
+          
+  /glossary:
+    post:
+      tags:
+      - "glossary"
+      summary: "Get glossary based on specified geo"
+      description: ""
+      operationId: "glossary"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User geo that might contain lat-lon, geoId, landmarkId.\
+          \ if null given, default will be Jakarta"
+        required: false
+        schema:
+          $ref: "#/definitions/GlossaryPageRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GlossaryPageResponse"
+            
 definitions:
   GeoDisplay:
     type: "object"
@@ -510,7 +536,7 @@ definitions:
     type: "object"
     properties:
       data:
-        $ref: "#/definitions/HomePageRequestData"
+        $ref: "#/definitions/GeoRequestData"
       context:
         $ref: "#/definitions/ContextRequest"
     example:
@@ -544,7 +570,7 @@ definitions:
         type: "string"
     example:
       session: "session"
-  HomePageRequestData:
+  GeoRequestData:
     type: "object"
     required:
     - "geoDisplay"
@@ -1973,3 +1999,77 @@ definitions:
         subcategories:
         - "Toppoki"
         - "Cheese"
+                
+  GlossaryPageRequest:
+    type: "object"
+    properties:
+      data:
+        $ref: "#/definitions/GeoRequestData"
+      context:
+        $ref: "#/definitions/ContextRequest"
+    example:
+      data:
+        geoLocation:
+          lon: 68.45
+          lat: 23.44
+        geoDisplay:
+          name: "Jakarta"
+          locationType: "GEO"
+          id: 0
+      context:
+        session: "session"
+        clientInterface: "clientInterface"
+        
+  GlossaryPageResponse:
+    type: "object"
+    required:
+    - "data"
+    properties:
+      data:
+        $ref: "#/definitions/GlossaryDataResponse"
+        
+  GlossaryDataResponse:
+    type: "object"
+    required:
+    - "categories"
+    properties:
+      categories:
+        type: array
+        items: 
+          $ref: "#/definitions/GlossaryCategory"
+        
+  GlossaryCategory:
+    type: "object"
+    required:
+    - "name"
+    - "items"
+    properties:
+      name:
+        type: "string"
+        example: "Italian"
+      items: 
+        $ref:  "#/definitions/GlossaryCategoryItem"
+            
+  GlossaryCategoryItem:
+    type: "object"
+    required:
+    - "type"
+    - "name"
+    - "image"
+    properties:
+      type:
+        type: "string"
+      name:
+        type: "string"
+      image:
+        type: "string"
+        
+    example:
+        - type: "DISH"
+          name: "PIZZA"
+          image: "s3://323"
+          
+        - type: "CUISINE"
+          name: "SALAD"
+          image: "s3://1323"
+
